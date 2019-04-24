@@ -1,0 +1,45 @@
+version: '3'
+services:
+  web:
+    build: app/.
+    container_name: "roac_web"
+    ports:
+     - "41961:3000"
+    depends_on:
+     - postgres_svc
+    environment:
+     - POSTGRES_HOST=postgres_svc
+    env_file:
+     - db.env
+  reflect:
+    build: postgraphile/.
+    container_name: "roac_reflect"
+    ports:
+     - "41962:5000"
+    depends_on:
+     - postgres_svc
+    environment:
+     - POSTGRES_HOST=postgres_svc
+    env_file:
+     - db.env
+  urlmap:
+    build: router/.
+    container_name: "roac_nginx"
+    ports:
+     - "80:80"
+     - "443:443"
+    depends_on:
+     - web
+     - reflect
+  postgres_svc:
+    container_name: pgserv
+    image: "postgres:10"
+    restart: unless-stopped
+    volumes:
+      - db:/var/lib/postgresql/data
+      - /etc/localtime:/etc/localtime:ro
+      - ./db:/docker-entrypoint-initdb.d
+    env_file:
+      - db.env
+volumes:
+  db:

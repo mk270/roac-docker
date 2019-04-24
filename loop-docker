@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -eu
+cd $(dirname $0)
+
+while true
+do
+  if [ -e ./rm-vol ]; then
+    echo Removing volume
+    docker volume rm roacdocker_db
+    rm -f -- ./rm-vol
+  fi
+  docker-compose build
+  docker-compose up
+  if [ -e ./loop-exit ]; then
+    rm -f -- ./loop-exit
+    exit 0
+  fi
+done

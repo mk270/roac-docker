@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+<!--
+	Stellar by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Scholar-led Catalogue</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+	</head>
+	<body>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header" class="alt">
+						<span class="logo"><img src="https://scholarled.org/images/logo.png" alt="" /></span>
+						<h1>Basic catalogue</h1>
+						<p>
+                          This webpage demostrates how we can build a shared
+                          catalogue: we agree a <a href="https://docs.google.com/document/d/17fuzmpIZTnpgMImqKvFUcsoLrSJ9DSYhvdiFzdWqlyU/edit">rough consensus</a> on what
+                          data we should hold on books. This is then <a href="/graphiql">exposed</a> read-only via <a href="https://graphql.org/">GraphQL</a>, a standard for making APIs for data. The system has been developed broadly in accordance with <a href="https://indieweb.org/principles">Indieweb principles</a> and uses open source software and open standards.
+                        </p>
+					</header>
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul>
+							<li><a href="#intro" class="active">Introduction</a></li>
+							<li><a href="#first">Books</a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Introduction -->
+							<section id="intro" class="main">
+								<div class="spotlight">
+									<div class="content">
+										<header class="major">
+											<h2>Intro</h2>
+										</header>
+										<p>
+                                          The data model lets us record data about the following sorts of things:
+                                          <ul>
+                                            <li>books</li>
+                                            <li>chapters of books</li>
+                                            <li>publications (e.g., the paperback version of a book)</li>
+                                            <li>contributors, including authors, illustrators, editors</li>
+                                            <li>publishers</li>
+                                            <li>who contributed to which book</li>
+                                            <li>... and a few other matters</li>
+                                          </ul>
+                                        </p>
+                                        <p>
+                                          OBP and Punctum have been careful to specify which data is absolutely mandatory and which data is optional. That is to say, the system will summarily reject books that don't have titles, but will not require that they have a DOI.
+                                        </p>
+								</div>
+							</section>
+
+						<!-- First Section -->
+
+							<section id="first" class="main special">
+								<header class="major">
+									<h2>From all publishers</h2>
+								</header>
+                        <div id="root"></div>
+								<footer class="major">
+									<ul class="actions">
+										<li><a href="generic.html" class="button">Learn More</a></li>
+									</ul>
+								</footer>
+							</section>
+
+
+					</div>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<section>
+							<h2>Barebones demo to show the parts connected</h2>
+						</section>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/skel.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>

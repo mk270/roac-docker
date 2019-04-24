@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -eu
+
+# we *might* need to override the GraphQL endpoint here
+
+exec npm start

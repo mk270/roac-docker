@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -eu
+
+cd $(dirname $0)
+./db.env
+./poll_server
+
+exec npx postgraphile --connection "$DB" \
+                      --host 0.0.0.0 \
+                      --classic-ids \
+                      --dynamic-json \
+                      "$@"
+
