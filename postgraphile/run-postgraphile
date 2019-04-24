@@ -3,7 +3,7 @@
 set -eu
 
 cd $(dirname $0)
-./db.env
+. db.env
 ./poll_server
 
 exec npx postgraphile --connection "$DB" \
