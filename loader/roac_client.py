@@ -18,7 +18,7 @@ def do_graphql(client, payload, data):
 def quote(s):
     return s.replace('"', '''\\"''')
 
-def save_publishers(client):
+def save_publishers(client, publisher_name):
     payload = """
       mutation {
         createPublisher(
@@ -38,7 +38,8 @@ def save_publishers(client):
     publishers = json.load(open(publishers_data))
 
     for publ in publishers:
-        do_graphql(client, payload, publ)
+        if publ["name"] == publisher_name:
+            do_graphql(client, payload, publ)
 
 def jprint(data):
     print(json.dumps(data, indent=2), file=sys.stderr)

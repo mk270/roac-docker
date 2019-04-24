@@ -26,11 +26,12 @@ class BookLoader:
     # then cached in book_uuids
 
 
-    def __init__(self, client, data_file):
+    def __init__(self, client, data_file, publisher_name):
         self.client = client
         self.data_file = data_file
         self.book_uuids = {}
         self.contributor_uuids = frozenset([])
+        self.publisher_name = publisher_name
 
     def setup_column_mapping(self):
         return {
@@ -46,7 +47,7 @@ class BookLoader:
     def load(self):
         for data in self.get_books():
             book_uuid = roac_client.save_book(self.client, data,
-                                              "Open Book Publishers")
+                                              self.publisher_name)
             self.book_uuids[data["row_id"]] = book_uuid
 
         contributors = frozenset([ (c[0], c[1])
@@ -224,18 +225,22 @@ class PunctumBookLoader(BookLoader):
                 continue
             yield (pub_format, pub_isbn)
 
-def load_obp_books(client, data_file, mode):
+def load_obp_books(client, data_file, mode, publisher_name):
     modes = {
         "OBP": OBPBookLoader,
         "Punctum": PunctumBookLoader
     }
     assert mode in modes
-    book_loader = modes[mode](client, data_file)
+    book_loader = modes[mode](client, data_file, publisher_name)
     book_loader.load()
 
 def run(client, data_file, mode):
-    roac_client.save_publishers(client)
-    load_obp_books(client, data_file, mode)
+    publisher_name = {
+        "OBP": "Open Book Publishers",
+        "Punctum": "Punctum Books"
+    }
+    roac_client.save_publishers(client, publisher_name[mode])
+    load_obp_books(client, data_file, mode, publisher_name[mode])
 
 def unwrap_args():
     parser = argparse.ArgumentParser()
