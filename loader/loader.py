@@ -17,11 +17,31 @@ import roac_client
 
 
 class BookLoader:
+    # self.book_uuids starts off as an empty dict
+    # it is supposed to map X to Y
+    # where X and Y are
+    # X: int, a row_id
+    # Y: str, a uuid
+    # the uuid is generated when the book is saved to graphql, and only
+    # then cached in book_uuids
+
+
     def __init__(self, client, data_file):
         self.client = client
         self.data_file = data_file
         self.book_uuids = {}
         self.contributor_uuids = frozenset([])
+
+    def setup_column_mapping(self):
+        return {
+            "Title": "title",
+            "Subtitle": "subtitle",
+            "DOI prefix": "doiPrefix",
+            "DOI suffix": "doiSuffix",
+            "no of pages": "pageCount",
+            "Cover URL": "cover_url",
+            "Book-page URL": "overview_url"
+        }
 
     def load(self):
         for data in self.get_books():
@@ -40,35 +60,36 @@ class BookLoader:
 
         self.get_publications()
 
+    def skip_row(self, data):
+        return False
+
+    def skip_row_no_dict(self, row):
+        return False
+
+    def get_doi(self, data, raw_data):
+        return raw_data['DOI']
+
     # note duplicated fn below
     def get_books(self):
-        columns = {
-            "Title": "title",
-            "Subtitle": "subtitle",
-            "DOI prefix": "doiPrefix",
-            "DOI suffix": "doiSuffix",
-            "no of pages": "pageCount",
-            "Cover URL": "cover_url",
-            "Book-page URL": "overview_url"
-        }
+        columns = self.setup_column_mapping()
         r = csv.DictReader(open(self.data_file))
         row_id = 0
         for row in r:
             data = dict([ (v, row[k]) for k, v in columns.items() ])
-            if data['doiSuffix'] == "":
+            if self.skip_row(data):
                 continue
             row_id += 1
-            data['doi'] = data['doiPrefix'] + '/' + data['doiSuffix']
+            data['doi'] = self.get_doi(data, row)
             data['row_id'] = row_id
             data['row'] = row
             yield data
 
     def contributors_from_row(self, row):
+        assert False
         for contributor in range(0, 6):
-            offset = contributor * 7 + 5
-            first_name = row[offset]
-            last_name  = row[offset + 1]
-            role       = row[offset + 2]
+            first_name = "Unimplemented"
+            last_name  = "Unimplemented"
+            role       = "Author"
             if first_name == "" or last_name == "" or role == "":
                 continue
             yield (first_name, last_name, role)
@@ -76,16 +97,17 @@ class BookLoader:
     def get_contributors(self):
         r = csv.reader(open(self.data_file))
         for row in r:
-            if row[0] in ["", "Title"]:
+            if self.skip_row_no_dict(row):
                 continue
             for c in self.contributors_from_row(row):
                 yield c
 
     def get_books_no_dict(self):
         r = csv.reader(open(self.data_file))
+        discard_header = r.__next__() # sic
         row_id = 0
         for row in r:
-            if row[0] in ["", "Title"]:
+            if self.skip_row_no_dict(row):
                 continue
             row_id += 1
             yield row_id, row
@@ -120,16 +142,100 @@ class BookLoader:
 
 
 class OBPBookLoader(BookLoader):
-    pass
+    def skip_row(self, data):
+        return data['doiSuffix'] == ""
+
+    def skip_row_no_dict(self, row):
+        return row[3] == ""
+
+    def get_doi(self, data, raw_data):
+        return data['doiPrefix'] + '/' + data['doiSuffix']
+
+    def contributors_from_row(self, row):
+        for contributor in range(0, 6):
+            offset = contributor * 7 + 5
+            first_name = row[offset]
+            last_name  = row[offset + 1]
+            role       = row[offset + 2]
+            if first_name == "" or last_name == "" or role == "":
+                continue
+            yield (first_name, last_name, role)
+
+    def publications_from_row(self, row):
+        for pub in range(0, 5):
+            offset = pub * 3 + 47
+            pub_format = row[offset].lower().strip()
+            pub_isbn   = row[offset + 1]
+            if pub_format == "" or pub_isbn == "":
+                continue
+            if len(pub_isbn) > 13:
+                continue
+            yield (pub_format, pub_isbn)
 
 
-def load_obp_books(client, data_file):
-    book_loader = OBPBookLoader(client, data_file)
+class PunctumBookLoader(BookLoader):
+    def setup_column_mapping(self):
+        return {
+            "Book Title": "title",
+            "Number of Pages": "pageCount",
+            "Cover URL": "cover_url",
+            "Website": "overview_url"
+        }
+
+    ## FIXME: this should be fixed upstream
+    ## the code *here* ought to throw an error rather than correct this
+    def get_doi(self, data, raw_data):
+        return raw_data['DOI'].strip("\n")
+
+    ## see comment for self.get_doi
+    def skip_row(self, data):
+        return data['pageCount'] == ""
+
+    ## FIXME
+    def skip_row_no_dict(self, row):
+        return row[23] == "" # that is, column X in the spreadsheet
+
+    def contributors_from_row(self, row):
+        rows = {
+            6: "Author",
+            7: "Editor"
+        }
+        for offset, role in rows.items():
+            cell = row[offset]
+            if cell == "":
+                continue
+            contributors = [ c.strip() for c in cell.split(";") ]
+            for contributor in contributors:
+                if ", " not in contributor:
+                    contributor += ", "
+                last_name, first_name = contributor.split(", ")
+                if last_name == "":
+                    continue
+                yield (first_name, last_name, role)
+
+    def publications_from_row(self, row):
+        for pub in (0,):
+            offset = pub * 1 + 13
+            pub_format = "paperback"
+            pub_isbn   = row[offset + 1]
+            if pub_format == "" or pub_isbn == "":
+                continue
+            if len(pub_isbn) > 13:
+                continue
+            yield (pub_format, pub_isbn)
+
+def load_obp_books(client, data_file, mode):
+    modes = {
+        "OBP": OBPBookLoader,
+        "Punctum": PunctumBookLoader
+    }
+    assert mode in modes
+    book_loader = modes[mode](client, data_file)
     book_loader.load()
 
-def run(client, data_file):
+def run(client, data_file, mode):
     roac_client.save_publishers(client)
-    load_obp_books(client, data_file)
+    load_obp_books(client, data_file, mode)
 
 def unwrap_args():
     parser = argparse.ArgumentParser()
@@ -137,9 +243,11 @@ def unwrap_args():
                         default="all-book-metadata.csv")
     parser.add_argument("--base-url", help="GraphQL endpoint URL",
                         default="http://localhost:41962/graphql")
+    parser.add_argument("--mode", help="Publisher mode (e.g., OBP, Punctum)",
+                        default="OBP")
     args = parser.parse_args()
     client = GraphQLClient(args.base_url)
-    run(client, args.file)
+    run(client, args.file, args.mode)
 
 if __name__ == '__main__':
     unwrap_args()
