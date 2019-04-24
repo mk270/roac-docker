@@ -2,6 +2,7 @@
 import os
 import uuid
 import json
+import sys
 
 publishers_data = os.path.join(os.path.dirname(__file__), "publishers.json")
 
@@ -13,6 +14,9 @@ def do_graphql(client, payload, data):
         jprint(json.loads(result))
         jprint(data)
         assert "errors" not in result
+
+def quote(s):
+    return s.replace('"', '''\\"''')
 
 def save_publishers(client):
     payload = """
@@ -37,7 +41,7 @@ def save_publishers(client):
         do_graphql(client, payload, publ)
 
 def jprint(data):
-    print(json.dumps(data, indent=2))
+    print(json.dumps(data, indent=2), file=sys.stderr)
 
 def save_book(client, book_data, publisher):
     #jprint(book_data)
@@ -61,8 +65,14 @@ def save_book(client, book_data, publisher):
     book_uuid = nonce_uuid()
     book_data['bookUuid'] = book_uuid
     book_data['publisherName'] = publisher
+    book_data['title'] = quote(book_data['title'])
 
-    do_graphql(client, payload, book_data)
+    try:
+        do_graphql(client, payload, book_data)
+    except:
+        jprint(book_data)
+        jprint(payload)
+        raise
 
     payload = """
       mutation {
@@ -90,9 +100,13 @@ def save_book(client, book_data, publisher):
         detail_data = {
             "bookUuid": book_data["bookUuid"],
             "detailId": detail,
-            "detailValue": book_data[detail]
+            "detailValue": quote(book_data[detail])
         }
-        do_graphql(client, payload, detail_data)
+        try:
+            do_graphql(client, payload, detail_data)
+        except:
+            jprint(detail_data)
+            raise
 
     return book_uuid
 
@@ -117,10 +131,14 @@ def save_contributors(client, contributors):
         c_uuid = nonce_uuid()
         data = {
             "contributorUuid": c_uuid,
-            "contributorName": c[0] + " " + c[1],
+            "contributorName": quote(c[0] + " " + c[1]),
             "contributorBio": "TBD"
         }
-        do_graphql(client, payload, data)
+        try:
+            do_graphql(client, payload, data)
+        except:
+            jprint(data)
+            raise
         uuids[c] = c_uuid
 
     return uuids
