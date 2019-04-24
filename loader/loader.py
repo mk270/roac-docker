@@ -21,7 +21,7 @@ class BookLoader:
         self.client = client
         self.data_file = data_file
         self.book_uuids = {}
-        # self.contributor_uuids
+        self.contributor_uuids = frozenset([])
 
     def load(self):
         for data in self.get_books():
