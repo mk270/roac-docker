@@ -39,6 +39,7 @@ services:
       - db:/var/lib/postgresql/data
       - /etc/localtime:/etc/localtime:ro
       - ./db:/docker-entrypoint-initdb.d
+      - ./loader/drop-db-data.sql:/drop-db-data.sql
     env_file:
       - db.env
 volumes:
