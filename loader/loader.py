@@ -15,7 +15,8 @@ from graphqlclient import GraphQLClient
 import os
 import roac_client
 
-class OBPBookLoader:
+
+class BookLoader:
     def __init__(self, client, data_file):
         self.client = client
         self.data_file = data_file
@@ -116,6 +117,11 @@ class OBPBookLoader:
                                              self.book_uuids[row_id],
                                              pub_format,
                                              pub_isbn)
+
+
+class OBPBookLoader(BookLoader):
+    pass
+
 
 def load_obp_books(client, data_file):
     book_loader = OBPBookLoader(client, data_file)
