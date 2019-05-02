@@ -26,12 +26,13 @@ class BookLoader:
     # then cached in book_uuids
 
 
-    def __init__(self, client, data_file, publisher_name):
+    def __init__(self, client, data_file, publisher_name, max_books):
         self.client = client
         self.data_file = data_file
         self.book_uuids = {}
         self.contributor_uuids = frozenset([])
         self.publisher_name = publisher_name
+        self.max_books = max_books
 
     def setup_column_mapping(self):
         return {
@@ -80,6 +81,9 @@ class BookLoader:
             if self.skip_row(data):
                 continue
             row_id += 1
+            if self.max_books:
+                if row_id > self.max_books:
+                    break
             data['doi'] = self.get_doi(data, row)
             data['row_id'] = row_id
             data['row'] = row
@@ -97,9 +101,14 @@ class BookLoader:
 
     def get_contributors(self):
         r = csv.reader(open(self.data_file))
+        row_id = 0
         for row in r:
             if self.skip_row_no_dict(row):
                 continue
+            row_id += 1
+            if self.max_books:
+                if row_id > self.max_books:
+                    break
             for c in self.contributors_from_row(row):
                 yield c
 
@@ -111,6 +120,9 @@ class BookLoader:
             if self.skip_row_no_dict(row):
                 continue
             row_id += 1
+            if self.max_books:
+                if row_id + 1 > self.max_books:
+                    break
             yield row_id, row
 
     def get_contributions(self):
@@ -225,22 +237,22 @@ class PunctumBookLoader(BookLoader):
                 continue
             yield (pub_format, pub_isbn)
 
-def load_obp_books(client, data_file, mode, publisher_name):
+def load_obp_books(client, data_file, mode, publisher_name, max_books):
     modes = {
         "OBP": OBPBookLoader,
         "Punctum": PunctumBookLoader
     }
     assert mode in modes
-    book_loader = modes[mode](client, data_file, publisher_name)
+    book_loader = modes[mode](client, data_file, publisher_name, max_books)
     book_loader.load()
 
-def run(client, data_file, mode):
+def run(client, data_file, mode, max_books):
     publisher_name = {
         "OBP": "Open Book Publishers",
         "Punctum": "Punctum Books"
     }
     roac_client.save_publishers(client, publisher_name[mode])
-    load_obp_books(client, data_file, mode, publisher_name[mode])
+    load_obp_books(client, data_file, mode, publisher_name[mode], max_books)
 
 def unwrap_args():
     parser = argparse.ArgumentParser()
@@ -250,9 +262,11 @@ def unwrap_args():
                         default="http://localhost:41962/graphql")
     parser.add_argument("--mode", help="Publisher mode (e.g., OBP, Punctum)",
                         default="OBP")
+    parser.add_argument("--max-books", help="Maximum books to import",
+                        default=None)
     args = parser.parse_args()
     client = GraphQLClient(args.base_url)
-    run(client, args.file, args.mode)
+    run(client, args.file, args.mode, int(args.max_books))
 
 if __name__ == '__main__':
     unwrap_args()
