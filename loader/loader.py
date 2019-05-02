@@ -42,7 +42,8 @@ class BookLoader:
             "DOI suffix": "doiSuffix",
             "no of pages": "pageCount",
             "Cover URL": "cover_url",
-            "Book-page URL": "overview_url"
+            "Book-page URL": "overview_url",
+            "ONIX Language Code": "languageCode"
         }
 
     def load(self):

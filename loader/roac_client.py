@@ -56,6 +56,7 @@ def save_book(client, book_data, publisher):
               bookUuid: "%(bookUuid)s"
               publisherName: "%(publisherName)s"
               pageCount: %(pageCount)s
+              langCode: "%(languageCode)s"
             }
           }
         ) {

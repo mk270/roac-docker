@@ -6,10 +6,17 @@ create table publisher (
        publisher_abbrev text not null
 );
 
+create table language_code (
+       lang_code char(3) primary key
+);
+
+insert into language_code (lang_code) values ('eng');
+
 create table book (
        book_uuid char(36) primary key,
        title text not null,
        publisher_name text not null references publisher(publisher_name),
+       lang_code char(3) not null references language_code(lang_code),
        subtitle text,
        page_count integer not null
 );
