@@ -43,7 +43,9 @@ class BookLoader:
             "no of pages": "pageCount",
             "Cover URL": "cover_url",
             "Book-page URL": "overview_url",
-            "ONIX Language Code": "languageCode"
+            "ONIX Language Code": "languageCode",
+            "edition number (integers only)": "edition",
+            "Copyright holder 1": "copyrightHolder"
         }
 
     def load(self):
@@ -72,6 +74,9 @@ class BookLoader:
     def get_doi(self, data, raw_data):
         return raw_data['DOI']
 
+    def get_copyright_holders(self, data):
+        assert False # unimplemented
+
     # note duplicated fn below
     def get_books(self):
         columns = self.setup_column_mapping()
@@ -86,6 +91,7 @@ class BookLoader:
                 if row_id > self.max_books:
                     break
             data['doi'] = self.get_doi(data, row)
+            data['copyrightHolder'] = self.get_copyright_holders(row)
             data['row_id'] = row_id
             data['row'] = row
             yield data
@@ -164,6 +170,24 @@ class OBPBookLoader(BookLoader):
 
     def get_doi(self, data, raw_data):
         return data['doiPrefix'] + '/' + data['doiSuffix']
+
+    def get_copyright_holders(self, row):
+        base = "Copyright holder "
+        names = []
+        for i in ["1", "2", "3"]:
+            field_name = base + i
+            val = row.get(field_name, "")
+            if val != "":
+                names.append(val)
+        if len(names) == 1:
+            return names[0]
+        elif len(names) == 2:
+            return names[0] + " & " + names[1]
+        elif len(names) == 0:
+            print(data)
+            assert False
+        else:
+            ", ".join(names[0:-1]) + " & " + names[-1]
 
     def contributors_from_row(self, row):
         for contributor in range(0, 6):

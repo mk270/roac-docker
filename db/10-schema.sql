@@ -11,14 +11,17 @@ create table language_code (
 );
 
 insert into language_code (lang_code) values ('eng');
+insert into language_code (lang_code) values ('fre');
 
 create table book (
        book_uuid char(36) primary key,
        title text not null,
        publisher_name text not null references publisher(publisher_name),
        lang_code char(3) not null references language_code(lang_code),
+       edition integer not null,
        subtitle text,
-       page_count integer not null
+       page_count integer not null,
+       copyright_holder text not null
 );
 
 create table format (

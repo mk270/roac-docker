@@ -57,6 +57,8 @@ def save_book(client, book_data, publisher):
               publisherName: "%(publisherName)s"
               pageCount: %(pageCount)s
               langCode: "%(languageCode)s"
+              edition: %(edition)s
+              copyrightHolder: "%(copyrightHolder)s"
             }
           }
         ) {
@@ -68,6 +70,7 @@ def save_book(client, book_data, publisher):
     book_data['bookUuid'] = book_uuid
     book_data['publisherName'] = publisher
     book_data['title'] = quote(book_data['title'])
+    book_data['copyrightHolder'] = quote(book_data['copyrightHolder'])
 
     try:
         do_graphql(client, payload, book_data)
