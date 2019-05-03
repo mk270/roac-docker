@@ -77,7 +77,7 @@ const Books = () => (
 class BookDetailCard extends React.Component {
   render() {
       var details = nodelist_to_object(this.props.details);
-      var bookLink = "/book/" + this.props.bookUuid;
+      //var bookLink = "/book/" + this.props.bookUuid;
       return (
         <div key={this.props.bookUuid}>
           <p>{`${this.props.title}: ${this.props.pageCount}`}</p>
