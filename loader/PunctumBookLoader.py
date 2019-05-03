@@ -7,7 +7,9 @@ class PunctumBookLoader(BookLoader):
             "Book Title": "title",
             "Number of Pages": "pageCount",
             "Cover URL": "cover_url",
-            "Website": "overview_url"
+            "Website": "overview_url",
+            "Language": "languageCode",
+            "Edition": "edition"
         }
 
     ## FIXME: this should be fixed upstream
@@ -22,6 +24,10 @@ class PunctumBookLoader(BookLoader):
     ## FIXME
     def skip_row_no_dict(self, row):
         return row[23] == "" # that is, column X in the spreadsheet
+
+    ## FIXME
+    def get_copyright_holders(self, row):
+        return row['Authors']
 
     def contributors_from_row(self, row):
         rows = {
