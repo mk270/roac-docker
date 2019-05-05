@@ -14,22 +14,20 @@ import roac_client
 from OBPBookLoader import OBPBookLoader
 from PunctumBookLoader import PunctumBookLoader
 
+publishers = {
+    "OBP": (OBPBookLoader, "Open Book Publishers"),
+    "Punctum": (PunctumBookLoader, "Punctum Books")
+}
+
 def load_books(client, data_file, mode, publisher_name, max_books):
-    modes = {
-        "OBP": OBPBookLoader,
-        "Punctum": PunctumBookLoader
-    }
-    assert mode in modes
-    book_loader = modes[mode](client, data_file, publisher_name, max_books)
+    assert mode in publishers
+    book_loader = publishers[mode][0](client, data_file,
+                                      publisher_name, max_books)
     book_loader.load()
 
 def run(client, data_file, mode, max_books):
-    publisher_name = {
-        "OBP": "Open Book Publishers",
-        "Punctum": "Punctum Books"
-    }
-    roac_client.save_publishers(client, publisher_name[mode])
-    load_books(client, data_file, mode, publisher_name[mode], max_books)
+    roac_client.save_publishers(client, publishers[mode][1])
+    load_books(client, data_file, mode, publishers[mode][1], max_books)
 
 def unwrap_args():
     parser = argparse.ArgumentParser()
