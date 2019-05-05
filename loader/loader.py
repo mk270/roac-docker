@@ -21,13 +21,14 @@ publishers = {
 
 def load_books(client, data_file, mode, publisher_name, max_books):
     assert mode in publishers
-    book_loader = publishers[mode][0](client, data_file,
-                                      publisher_name, max_books)
+    loader_class, name = publishers[mode]
+    book_loader = loader_class(client, data_file, publisher_name, max_books)
     book_loader.load()
 
 def run(client, data_file, mode, max_books):
-    roac_client.save_publishers(client, publishers[mode][1])
-    load_books(client, data_file, mode, publishers[mode][1], max_books)
+    loader_class, name = publishers[mode]
+    roac_client.save_publishers(client, name)
+    load_books(client, data_file, mode, name, max_books)
 
 def unwrap_args():
     parser = argparse.ArgumentParser()
