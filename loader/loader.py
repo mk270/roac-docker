@@ -19,16 +19,11 @@ publishers = {
     "Punctum": (PunctumBookLoader, "Punctum Books")
 }
 
-def load_books(client, data_file, mode, publisher_name, max_books):
-    assert mode in publishers
-    loader_class, name = publishers[mode]
+def run(client, data_file, mode, max_books):
+    loader_class, publisher_name = publishers[mode]
+    roac_client.save_publishers(client, publisher_name)
     book_loader = loader_class(client, data_file, publisher_name, max_books)
     book_loader.load()
-
-def run(client, data_file, mode, max_books):
-    loader_class, name = publishers[mode]
-    roac_client.save_publishers(client, name)
-    load_books(client, data_file, mode, name, max_books)
 
 def unwrap_args():
     parser = argparse.ArgumentParser()
