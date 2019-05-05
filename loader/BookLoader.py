@@ -77,6 +77,7 @@ class BookLoader:
                     break
             data['doi'] = self.get_doi(data, row)
             data['copyrightHolder'] = self.get_copyright_holders(row)
+            data['languageCode'] = data['languageCode'][:3] ## FIXME
             data['row_id'] = row_id
             data['row'] = row
             yield data
