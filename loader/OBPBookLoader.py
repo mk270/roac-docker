@@ -1,5 +1,13 @@
 from BookLoader import BookLoader
 
+def comma_join(names):
+    if len(names) == 1:
+        return names[0]
+    elif len(names) == 2:
+        return names[0] + " & " + names[1]
+    else:
+        ", ".join(names[0:-1]) + " & " + names[-1]
+
 class OBPBookLoader(BookLoader):
     def skip_row(self, data):
         return data['doiSuffix'] == ""
@@ -20,13 +28,7 @@ class OBPBookLoader(BookLoader):
                 names.append(val)
 
         assert len(names) > 0
-
-        if len(names) == 1:
-            return names[0]
-        elif len(names) == 2:
-            return names[0] + " & " + names[1]
-        else:
-            ", ".join(names[0:-1]) + " & " + names[-1]
+        return comma_join(names)
 
     def contributors_from_row(self, row):
         for contributor in range(0, 6):
