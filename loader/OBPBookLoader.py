@@ -18,13 +18,13 @@ class OBPBookLoader(BookLoader):
             val = row.get(field_name, "")
             if val != "":
                 names.append(val)
+
+        assert len(names) > 0
+
         if len(names) == 1:
             return names[0]
         elif len(names) == 2:
             return names[0] + " & " + names[1]
-        elif len(names) == 0:
-            print(data)
-            assert False
         else:
             ", ".join(names[0:-1]) + " & " + names[-1]
 
