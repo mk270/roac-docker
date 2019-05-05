@@ -6,7 +6,7 @@ def comma_join(names):
     elif len(names) == 2:
         return names[0] + " & " + names[1]
     else:
-        ", ".join(names[0:-1]) + " & " + names[-1]
+        return ", ".join(names[0:-1]) + " & " + names[-1]
 
 class OBPBookLoader(BookLoader):
     def skip_row(self, data):
