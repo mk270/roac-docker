@@ -30,7 +30,8 @@ class BookLoader:
             "Book-page URL": "overview_url",
             "ONIX Language Code": "languageCode",
             "edition number (integers only)": "edition",
-            "Copyright holder 1": "copyrightHolder"
+            "Copyright holder 1": "copyrightHolder",
+            "Short Blurb (less than 100 words)": "short_blurb"
         }
 
     def load(self):

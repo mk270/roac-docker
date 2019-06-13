@@ -9,7 +9,8 @@ class PunctumBookLoader(BookLoader):
             "Cover URL": "cover_url",
             "Website": "overview_url",
             "Language": "languageCode",
-            "Edition": "edition"
+            "Edition": "edition",
+            "Abstract": "short_blurb"
         }
 
     ## FIXME: this should be fixed upstream

@@ -107,6 +107,7 @@ create table detail (
 insert into detail (detail_id, detail_name) values ('cover_url', 'Cover URL');
 insert into detail (detail_id, detail_name) values ('overview_url', 'Overview URL');
 insert into detail (detail_id, detail_name) values ('doi', 'DOI');
+insert into detail (detail_id, detail_name) values ('short_blurb', 'Short blurb');
 
 create table book_detail (
        book_uuid char(36) not null references book(book_uuid),

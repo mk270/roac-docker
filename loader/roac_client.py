@@ -109,7 +109,8 @@ def save_book(client, book_data, publisher):
     details = [
         "doi",
         "overview_url",
-        "cover_url"
+        "cover_url",
+        "short_blurb"
     ]
     
     for detail in details:
