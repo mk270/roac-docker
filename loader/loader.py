@@ -33,11 +33,11 @@ def unwrap_args():
                         default="http://localhost:41962/graphql")
     parser.add_argument("--mode", help="Publisher mode (e.g., OBP, Punctum)",
                         default="OBP")
-    parser.add_argument("--max-books", help="Maximum books to import",
+    parser.add_argument("--max-books", type=int, help="Maximum books to import",
                         default=None)
     args = parser.parse_args()
     client = GraphQLClient(args.base_url)
-    run(client, args.file, args.mode, int(args.max_books))
+    run(client, args.file, args.mode, args.max_books)
 
 if __name__ == '__main__':
     unwrap_args()
