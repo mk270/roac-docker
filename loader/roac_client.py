@@ -9,14 +9,25 @@ publishers_data = os.path.join(os.path.dirname(__file__), "publishers.json")
 def nonce_uuid(): return str(uuid.uuid4())
 
 def do_graphql(client, payload, data):
-    result = client.execute(payload % data)
-    if "errors" in result:
+    def report_errors(result):
         jprint(json.loads(result))
         jprint(data)
-        assert "errors" not in result
+        print(payload, file=sys.stderr)
+
+    try:
+        request = payload % data
+        result = client.execute(request)
+        if "errors" in result:
+            report_errors(result)
+            assert "errors" not in result
+    except:
+        print("ERROR", file=sys.stderr)
+        report_errors({})
+        raise
 
 def quote(s):
-    return s.replace('"', '''\\"''')
+    tmp = s.replace("\n", "\\n")
+    return tmp.replace('"', '''\\"''')
 
 def save_publishers(client, publisher_name):
     payload = """
