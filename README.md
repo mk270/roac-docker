@@ -7,7 +7,7 @@ Dev loop
 After changing the database schema
 ```
    $ touch rm-vol
-   $ docker-compose-down
+   $ docker-compose down
 ```
 
 To add a column
