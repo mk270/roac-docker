@@ -147,17 +147,17 @@ create table price (
        unique (publication_uuid, currency_code)
 );
 
-create imprint (
+create table imprint (
        imprint_name text unique not null,
        publisher_name text references publisher(publisher_name)
 );
 
-create imprint_volume (
+create table imprint_volume (
        book_uuid char(36) unique not null references book(book_uuid),
        imprint_name text not null references imprint(imprint_name)
 );
 
-create funder (
+create table funder (
        book_uuid char(36) unique not null references book(book_uuid),
        funder_name text not null,
        fundref text not null,
