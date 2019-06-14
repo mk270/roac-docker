@@ -115,10 +115,6 @@ create table subject (
        unique(subject_code, subject_scheme_name)
 );
 
-create table keyword (
-       keyword_text varchar(50) unique not null
-);
-
 create table book_subject (
        book_uuid char(36) not null references book(book_uuid),
        subject_code varchar(50) not null,
@@ -130,7 +126,7 @@ create table book_subject (
 
 create table book_keyword (
        book_uuid char(36) not null references book(book_uuid),
-       keyword_text varchar(5) not null references keyword(keyword_text),
+       keyword_text text not null,
        keyword_ordinal integer not null,
        unique (book_uuid, keyword_text)
 );

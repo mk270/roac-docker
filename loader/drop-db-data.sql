@@ -6,7 +6,6 @@ delete from imprint;
 delete from price;
 delete from currency;
 delete from book_keyword;
-delete from keyword;
 delete from book_subject;
 delete from subject;
 delete from subject_scheme;
