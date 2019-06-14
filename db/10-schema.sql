@@ -119,4 +119,19 @@ create table book_detail (
        unique (book_uuid, detail_id)
 );
 
+create table series (
+       series_uuid char(36) unique not null,
+       series_name text not null,
+       series_issn_print char(8) unique not null,
+       series_issn_digital char(8) unique not null,
+       series_url text
+);
+
+create table series_volume (
+       book_uuid char(36) not null references book(book_uuid),
+       series_uuid char(36) not null references series(series_uuid),
+       volume_ordinal integer not null,
+       unique (book_uuid, series_uuid)
+);
+
 commit;
