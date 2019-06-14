@@ -1,6 +1,8 @@
-copy language_code (lang_code) from '/docker-entrypoint-initdb.d/language_codes.csv' with csv;
+copy language_code (lang_code)
+  from '/docker-entrypoint-initdb.d/language_codes.csv' with csv;
 
-copy format (format_name) from '/docker-entrypoint-initdb.d/formats.csv' with csv;
+copy format (format_name)
+  from '/docker-entrypoint-initdb.d/formats.csv' with csv;
 
 insert into contributor_role (role_name) values ('author');
 insert into contributor_role (role_name) values ('editor');
