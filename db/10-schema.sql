@@ -147,13 +147,25 @@ create table price (
        unique (publication_uuid, currency_code)
 );
 
---create imprint (
---       imprint_name text unique not null,
---       publisher_name text references publisher(publisher_name)
---);
+create imprint (
+       imprint_name text unique not null,
+       publisher_name text references publisher(publisher_name)
+);
 
---funder
---imprint
---imprint_volume
+create imprint_volume (
+       book_uuid char(36) unique not null references book(book_uuid),
+       imprint_name text not null references imprint(imprint_name)
+);
+
+create funder (
+       book_uuid char(36) unique not null references book(book_uuid),
+       funder_name text not null,
+       fundref text not null,
+       funding_programme_name text,
+       funding_project_name text,
+       funding_project_abbreviation text,
+       funding_grant_number text,
+       funding_jurisdiction text
+);
 
 commit;

@@ -1,5 +1,8 @@
 --
 
+delete from funder;
+delete from imprint_volume;
+delete from imprint;
 delete from price;
 delete from currency;
 delete from book_keyword;
