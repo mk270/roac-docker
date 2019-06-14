@@ -274,3 +274,53 @@ def save_imprint_volume(client, book_uuid, imprint_name):
         "imprintName": imprint_name
     }
     do_graphql(client, payload, data)
+
+def save_series(client, issn1, issn2, series_name):
+    payload = """
+    mutation {
+        createSeries (
+          input: {
+            series: {
+              seriesUuid: "%(seriesUuid)s"
+              seriesName: "%(seriesName)s"
+              seriesIssnPrint: "%(seriesIssnPrint)s"
+              seriesIssnDigital: "%(seriesIssnDigital)s"
+            }
+          }
+        ) {
+            clientMutationId
+        }
+      }
+    """
+    series_uuid = nonce_uuid()
+    data = {
+        "seriesUuid": series_uuid,
+        "seriesName": series_name,
+        "seriesIssnPrint": issn1,
+        "seriesIssnDigital": issn2
+    }
+    do_graphql(client, payload, data)
+    return series_uuid
+
+def save_series_volume(client, book_uuid, series_uuid, volume_ordinal):
+    payload = """
+    mutation {
+        createSeriesVolume (
+          input: {
+            seriesVolume: {
+              seriesUuid: "%(seriesUuid)s"
+              bookUuid: "%(bookUuid)s"
+              volumeOrdinal: %(volumeOrdinal)s
+            }
+          }
+        ) {
+            clientMutationId
+        }
+      }
+    """
+    data = {
+        "seriesUuid": series_uuid,
+        "bookUuid": book_uuid,
+        "volumeOrdinal": volume_ordinal
+    }
+    do_graphql(client, payload, data)

@@ -33,10 +33,12 @@ class OBPBookLoader(BookLoader):
 
         print_issn   = raw_data["ISSN Print with dashes"]
         digital_issn = raw_data["ISSN Digital with dashes"]
+        series_name  = raw_data["Series Name"]
         if len(print_issn) < 8 or len(digital_issn) < 8:
             return None
         return (sanitise_issn(print_issn),
-                sanitise_issn(digital_issn))
+                sanitise_issn(digital_issn),
+                series_name)
 
     def get_copyright_holders(self, row):
         base = "Copyright holder "

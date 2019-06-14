@@ -59,6 +59,8 @@ class BookLoader:
 
         self.get_imprints()
 
+        self.get_series()
+
     def skip_row(self, data):
         return False
 
@@ -226,3 +228,33 @@ class BookLoader:
             roac_client.save_imprint_volume(self.client,
                                             self.book_uuids[row_id],
                                             imp)
+    def get_series(self):
+        def all_series():
+            for data in self.get_books():
+                series_ids = data["series_ids"]
+                if series_ids is None:
+                    continue
+                yield series_ids
+        series = frozenset([ s for s in all_series() ])
+
+        series_uuids = {}
+        for issn1, issn2, series_name in series:
+            u = roac_client.save_series(self.client, issn1, issn2, series_name)
+            series_uuids[(issn1, issn2)] = u
+
+        for data in self.get_books():
+            series_ids = data["series_ids"]
+            number = data["row"]["No. in the Series"]
+            if series_ids is None:
+                continue
+            if number == "":
+                continue
+            volume_ordinal = int(number)
+            row_id = data["row_id"]
+            series_uuid = series_uuids[(series_ids[0],
+                                        series_ids[1])]
+            roac_client.save_series_volume(self.client,
+                                           self.book_uuids[row_id],
+                                           series_uuid,
+                                           volume_ordinal)
+
