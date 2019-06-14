@@ -1,5 +1,8 @@
+import sys
 import csv
 import roac_client
+import codelists
+import decimal
 
 class BookLoader:
     # self.book_uuids starts off as an empty dict
@@ -15,6 +18,7 @@ class BookLoader:
         self.client = client
         self.data_file = data_file
         self.book_uuids = {}
+        self.publication_uuids = {}
         self.contributor_uuids = frozenset([])
         self.publisher_name = publisher_name
         self.max_books = max_books
@@ -50,6 +54,8 @@ class BookLoader:
             roac_client.save_contribution(self.client, *contribution)
 
         self.get_publications()
+
+        self.get_prices()
 
     def skip_row(self, data):
         return False
@@ -143,9 +149,42 @@ class BookLoader:
     def get_publications(self):
         for row_id, row in self.get_books_no_dict():
             for pub_format, pub_isbn in self.publications_from_row(row):
-                roac_client.save_publication(self.client,
-                                             self.book_uuids[row_id],
-                                             pub_format,
-                                             pub_isbn)
+                book_uuid = self.book_uuids[row_id]
+                u = roac_client.save_publication(self.client,
+                                                 book_uuid,
+                                                 pub_format,
+                                                 pub_isbn)
+                assert (book_uuid, pub_format) not in self.publication_uuids
+                self.publication_uuids[(book_uuid, pub_format)] = u
 
+    def price_column_name(self, currency, fmt):
+        if fmt == "pdf":
+            fmt = "PDF"
+        return currency + " price " + fmt
 
+    def get_prices(self):
+        def currencies_and_prices():
+            for currency in sorted(codelists.get_currencies()):
+                for fmt in sorted(codelists.get_formats()):
+                    yield currency, fmt, self.price_column_name(currency, fmt)
+
+        def get_book_prices():
+            for data in self.get_books():
+                for currency, fmt, col_name in currencies_and_prices():
+                    if col_name in data["row"]:
+                        price = data["row"][col_name]
+                        if len(price) == 0:
+                            continue
+                        book_uuid = self.book_uuids[data["row_id"]]
+                        yield (book_uuid, currency, fmt, decimal.Decimal(price),
+                               data["doi"])
+        
+        for book_uuid, currency, fmt, price, doi in get_book_prices():
+            key = (book_uuid, fmt)
+            if key not in self.publication_uuids:
+                print("Price found without ISBN?: {}".format(key),
+                      file=sys.stderr)
+                continue
+            publication_uuid = self.publication_uuids[(book_uuid, fmt)]
+            roac_client.save_price(self.client, publication_uuid,
+                                   currency, price)

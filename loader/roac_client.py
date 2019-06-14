@@ -200,10 +200,35 @@ def save_publication(client, book_uuid, pub_format, pub_isbn):
         }
       }
     """
+    publication_uuid = nonce_uuid()
     data = {
         "bookUuid": book_uuid,
-        "publicationUuid": nonce_uuid(),
+        "publicationUuid": publication_uuid,
         "format": pub_format,
         "isbn": pub_isbn
+    }
+    do_graphql(client, payload, data)
+    return publication_uuid
+
+def save_price(client, publication_uuid, currency, price):
+    payload = """
+    mutation {
+        createPublicationPrice (
+          input: {
+            publicationPrice: {
+              publicationUuid: "%(publicationUuid)s"
+              currencyCode: "%(currency)s"
+              listPrice: "%(listPrice)s"
+            }
+          }
+        ) {
+            clientMutationId
+        }
+      }
+    """
+    data = {
+        "publicationUuid": publication_uuid,
+        "currency": currency,
+        "listPrice": str(price)
     }
     do_graphql(client, payload, data)

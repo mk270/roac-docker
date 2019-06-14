@@ -127,8 +127,8 @@ create table currency (
        currency_code char(3) primary key
 );
 
-create table price (
-       publication_uuid char(30) not null
+create table publication_price (
+       publication_uuid char(36) not null
                references publication(publication_uuid),
        currency_code char(3) references currency(currency_code),
        list_price numeric(7, 2),
