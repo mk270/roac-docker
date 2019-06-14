@@ -95,6 +95,7 @@ class BookLoader:
 
     def get_contributors(self):
         r = csv.reader(open(self.data_file))
+        discard_header = r.__next__() # sic
         row_id = 0
         for row in r:
             if self.skip_row_no_dict(row):
