@@ -14,6 +14,9 @@ insert into language_code (lang_code) values ('eng');
 insert into language_code (lang_code) values ('fre');
 insert into language_code (lang_code) values ('alb');
 insert into language_code (lang_code) values ('por');
+insert into language_code (lang_code) values ('ita');
+insert into language_code (lang_code) values ('nor');
+
 
 create table book (
        book_uuid char(36) primary key,
