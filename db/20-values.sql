@@ -27,3 +27,5 @@ insert into detail (detail_id, detail_name) values ('cover_url', 'Cover URL');
 insert into detail (detail_id, detail_name) values ('overview_url', 'Overview URL');
 insert into detail (detail_id, detail_name) values ('doi', 'DOI');
 insert into detail (detail_id, detail_name) values ('short_blurb', 'Short blurb');
+
+copy currency (currency_code) from '/docker-entrypoint-initdb.d/iso4217.csv' with csv;

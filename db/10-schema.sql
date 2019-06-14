@@ -104,4 +104,56 @@ create table series_volume (
        unique (book_uuid, series_uuid)
 );
 
+create table subject_scheme (
+       subject_scheme_name varchar(20) unique not null
+);
+
+create table subject (
+       subject_code varchar(50) not null,
+       subject_scheme_name varchar(20) not null
+              references subject_scheme(subject_scheme_name),
+       unique(subject_code, subject_scheme_name)
+);
+
+create table keyword (
+       keyword_text varchar(50) unique not null
+);
+
+create table book_subject (
+       book_uuid char(36) not null references book(book_uuid),
+       subject_code varchar(50) not null,
+       subject_scheme_name varchar(20) not null,
+       unique (book_uuid, subject_code, subject_scheme_name),
+       foreign key (subject_code, subject_scheme_name)
+               references subject(subject_code, subject_scheme_name)
+);
+
+create table book_keyword (
+       book_uuid char(36) not null references book(book_uuid),
+       keyword_text varchar(5) not null references keyword(keyword_text),
+       keyword_ordinal integer not null,
+       unique (book_uuid, keyword_text)
+);
+
+create table currency (
+       currency_code char(3) primary key
+);
+
+create table price (
+       publication_uuid char(30) not null
+               references publication(publication_uuid),
+       currency_code char(3) references currency(currency_code),
+       list_price numeric(7, 2),
+       unique (publication_uuid, currency_code)
+);
+
+--create imprint (
+--       imprint_name text unique not null,
+--       publisher_name text references publisher(publisher_name)
+--);
+
+--funder
+--imprint
+--imprint_volume
+
 commit;
