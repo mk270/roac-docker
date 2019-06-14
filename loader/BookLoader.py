@@ -57,6 +57,8 @@ class BookLoader:
 
         self.get_prices()
 
+        self.get_imprints()
+
     def skip_row(self, data):
         return False
 
@@ -67,6 +69,9 @@ class BookLoader:
         return raw_data['DOI']
 
     def get_copyright_holders(self, data):
+        assert False # unimplemented
+
+    def get_imprint(self, data, raw_data):
         assert False # unimplemented
 
     # note duplicated fn below
@@ -87,6 +92,7 @@ class BookLoader:
             data['languageCode'] = data['languageCode'][:3] ## FIXME
             data['row_id'] = row_id
             data['row'] = row
+            data['imprint'] = self.get_imprint(data, row)
             yield data
 
     def contributors_from_row(self, row):
@@ -188,3 +194,31 @@ class BookLoader:
             publication_uuid = self.publication_uuids[(book_uuid, fmt)]
             roac_client.save_price(self.client, publication_uuid,
                                    currency, price)
+
+    def get_imprints(self):
+        def has_imprint(imp):
+            if imp is None:
+                return False
+            if imp == "":
+                return False
+            return True
+
+        def imprint_names():
+            for data in self.get_books():
+                imprint = data["imprint"]
+                if not has_imprint(imprint):
+                    continue
+                yield imprint
+        imprints = frozenset([ i for i in imprint_names() ])
+
+        for i in imprints:
+            roac_client.save_imprint(self.client, i, self.publisher_name)
+
+        for data in self.get_books():
+            imp = data["imprint"]
+            if not has_imprint(imp):
+                continue
+            row_id = data["row_id"]
+            roac_client.save_imprint_volume(self.client,
+                                            self.book_uuids[row_id],
+                                            imp)

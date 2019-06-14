@@ -232,3 +232,45 @@ def save_price(client, publication_uuid, currency, price):
         "listPrice": str(price)
     }
     do_graphql(client, payload, data)
+
+def save_imprint(client, imprint_name, publisher_name):
+    payload = """
+    mutation {
+        createImprint (
+          input: {
+            imprint: {
+              imprintName: "%(imprintName)s"
+              publisherName: "%(publisherName)s"
+            }
+          }
+        ) {
+            clientMutationId
+        }
+      }
+    """
+    data = {
+        "publisherName": publisher_name,
+        "imprintName": imprint_name
+    }
+    do_graphql(client, payload, data)
+
+def save_imprint_volume(client, book_uuid, imprint_name):
+    payload = """
+    mutation {
+        createImprintVolume (
+          input: {
+            imprintVolume: {
+              bookUuid: "%(bookUuid)s"
+              imprintName: "%(imprintName)s"
+            }
+          }
+        ) {
+            clientMutationId
+        }
+      }
+    """
+    data = {
+        "bookUuid": book_uuid,
+        "imprintName": imprint_name
+    }
+    do_graphql(client, payload, data)

@@ -18,6 +18,10 @@ class OBPBookLoader(BookLoader):
     def get_doi(self, data, raw_data):
         return data['doiPrefix'] + '/' + data['doiSuffix']
 
+    def get_imprint(self, data, raw_data):
+        """Unimplemented - OBP effectively has no imprints."""
+        return None
+
     def get_copyright_holders(self, row):
         base = "Copyright holder "
         names = []

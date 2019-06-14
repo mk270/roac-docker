@@ -18,6 +18,9 @@ class PunctumBookLoader(BookLoader):
     def get_doi(self, data, raw_data):
         return raw_data['DOI'].strip("\n")
 
+    def get_imprint(self, data, raw_data):
+        return raw_data["Imprint"]
+
     ## see comment for self.get_doi
     def skip_row(self, data):
         return data['pageCount'] == ""
