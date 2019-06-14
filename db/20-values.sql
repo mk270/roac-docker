@@ -1,12 +1,6 @@
 copy language_code (lang_code) from '/docker-entrypoint-initdb.d/language_codes.csv' with csv;
 
-insert into format (format_name) values ('paperback');
-insert into format (format_name) values ('hardback');
-insert into format (format_name) values ('pdf');
-insert into format (format_name) values ('epub');
-insert into format (format_name) values ('mobi');
-insert into format (format_name) values ('html');
-insert into format (format_name) values ('xml');
+copy format (format_name) from '/docker-entrypoint-initdb.d/formats.csv' with csv;
 
 insert into contributor_role (role_name) values ('author');
 insert into contributor_role (role_name) values ('editor');
