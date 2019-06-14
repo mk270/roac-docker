@@ -33,14 +33,6 @@ create table publication (
        unique(isbn)
 );
 
-create table publication_price (
-       publication_uuid char(36) primary key
-               references publication(publication_uuid),
-       currency char(3) not null,
-       price decimal(12,2) not null,
-       unique (publication_uuid, currency)
-);
-
 create table chapter (
        chapter_uuid char(36) primary key,
        chapter_name varchar(200) not null,
