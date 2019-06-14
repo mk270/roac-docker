@@ -178,7 +178,7 @@ class BookLoader:
                         book_uuid = self.book_uuids[data["row_id"]]
                         yield (book_uuid, currency, fmt, decimal.Decimal(price),
                                data["doi"])
-        
+
         for book_uuid, currency, fmt, price, doi in get_book_prices():
             key = (book_uuid, fmt)
             if key not in self.publication_uuids:
