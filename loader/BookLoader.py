@@ -74,6 +74,9 @@ class BookLoader:
     def get_imprint(self, data, raw_data):
         assert False # unimplemented
 
+    def get_series_ids(self, data, raw_data):
+        assert False # unimplemented
+
     # note duplicated fn below
     def get_books(self):
         columns = self.setup_column_mapping()
@@ -93,6 +96,7 @@ class BookLoader:
             data['row_id'] = row_id
             data['row'] = row
             data['imprint'] = self.get_imprint(data, row)
+            data['series_ids'] = self.get_series_ids(data, row)
             yield data
 
     def contributors_from_row(self, row):

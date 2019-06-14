@@ -1,3 +1,5 @@
+import re
+
 from BookLoader import BookLoader
 
 def comma_join(names):
@@ -21,6 +23,20 @@ class OBPBookLoader(BookLoader):
     def get_imprint(self, data, raw_data):
         """Unimplemented - OBP effectively has no imprints."""
         return None
+
+    def get_series_ids(self, data, raw_data):
+        def sanitise_issn(s):
+            s2 = s[0:4] + s[5:9]
+            assert s2[:7].isdigit()
+            assert s2[-1:] == "X" or s2[-1:].isdigit()
+            return s2
+
+        print_issn   = raw_data["ISSN Print with dashes"]
+        digital_issn = raw_data["ISSN Digital with dashes"]
+        if len(print_issn) < 8 or len(digital_issn) < 8:
+            return None
+        return (sanitise_issn(print_issn),
+                sanitise_issn(digital_issn))
 
     def get_copyright_holders(self, row):
         base = "Copyright holder "
