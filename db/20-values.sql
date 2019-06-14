@@ -1,10 +1,4 @@
-
-insert into language_code (lang_code) values ('eng');
-insert into language_code (lang_code) values ('fre');
-insert into language_code (lang_code) values ('alb');
-insert into language_code (lang_code) values ('por');
-insert into language_code (lang_code) values ('ita');
-insert into language_code (lang_code) values ('nor');
+copy language_code (lang_code) from '/docker-entrypoint-initdb.d/language_codes.csv' with csv;
 
 insert into format (format_name) values ('paperback');
 insert into format (format_name) values ('hardback');
