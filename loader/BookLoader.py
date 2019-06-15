@@ -65,6 +65,8 @@ class BookLoader:
 
         self.save_keywords()
 
+        self.save_subjects()
+
     def skip_row(self, data):
         return False
 
@@ -84,6 +86,9 @@ class BookLoader:
         assert False # unimplemented
 
     def get_keywords(self, data, raw_data):
+        assert False # unimplemented
+
+    def get_subjects(self, data, raw_data):
         assert False # unimplemented
 
     # note duplicated fn below
@@ -107,6 +112,7 @@ class BookLoader:
             data['imprint'] = self.get_imprint(data, row)
             data['series_ids'] = self.get_series_ids(data, row)
             data['keywords'] = self.get_keywords(data, row)
+            data['subjects'] = self.get_subjects(data, row)
             yield data
 
     def contributors_from_row(self, row):
@@ -277,3 +283,21 @@ class BookLoader:
             for kwd in kwds:
                 idx += 1
                 roac_client.save_keyword(self.client, book_uuid, kwd, idx)
+
+    def save_subjects(self):
+        subjects_seen = set([])
+
+        for data in self.get_books():
+            subjects = data["subjects"]
+            for subject in subjects:
+                if subject not in subjects_seen:
+                    subject_scheme, subject_name = subject
+                    roac_client.save_subject(self.client,
+                                             subject_scheme,
+                                             subject_name)
+                    subjects_seen |= set([subject])
+                book_uuid = self.book_uuids[data["row_id"]]
+                roac_client.save_book_subject(self.client,
+                                              book_uuid,
+                                              subject_scheme,
+                                              subject_name)

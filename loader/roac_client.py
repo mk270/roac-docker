@@ -347,4 +347,47 @@ def save_keyword(client, book_uuid, keyword, idx):
         "keywordOrdinal": idx
     }
     do_graphql(client, payload, data)
-    
+
+def save_subject(client, subject_scheme, subject_name):
+    payload = """
+    mutation {
+        createSubject (
+          input: {
+            subject: {
+              subjectCode: "%(subjectCode)s"
+              subjectSchemeName: "%(subjectScheme)s"
+            }
+          }
+        ) {
+            clientMutationId
+        }
+      }
+    """
+    data = {
+        "subjectCode": subject_name,
+        "subjectScheme": subject_scheme
+    }
+    do_graphql(client, payload, data)
+
+def save_book_subject(client, book_uuid, subject_scheme, subject_name):
+    payload = """
+    mutation {
+        createBookSubject (
+          input: {
+            bookSubject: {
+              bookUuid: "%(bookUuid)s"
+              subjectCode: "%(subjectCode)s"
+              subjectSchemeName: "%(subjectScheme)s"
+            }
+          }
+        ) {
+            clientMutationId
+        }
+      }
+    """
+    data = {
+        "bookUuid": book_uuid,
+        "subjectCode": subject_name,
+        "subjectScheme": subject_scheme
+    }
+    do_graphql(client, payload, data)

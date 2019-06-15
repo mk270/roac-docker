@@ -28,6 +28,16 @@ class OBPBookLoader(BookLoader):
         kwds = row_data["keywords"]
         return [ kwd.strip() for kwd in kwds.split(";") ]
 
+    def get_subjects(self, data, row_data):
+        def all_subject_data():
+            for scheme in ["BIC", "BISAC"]:
+                for col in map(str, [i for i in range(1, 6)]):
+                    col_name = "{} subject code {}".format(scheme, col)
+                    val = row_data[col_name]
+                    if len(val) > 0:
+                        yield scheme, val
+        return [ i for i in all_subject_data() ]
+
     def get_series_ids(self, data, raw_data):
         def sanitise_issn(s):
             s2 = s[0:4] + s[5:9]
