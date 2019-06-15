@@ -24,6 +24,10 @@ class OBPBookLoader(BookLoader):
         """Unimplemented - OBP effectively has no imprints."""
         return None
 
+    def get_keywords(self, data, row_data):
+        kwds = row_data["keywords"]
+        return [ kwd.strip() for kwd in kwds.split(";") ]
+
     def get_series_ids(self, data, raw_data):
         def sanitise_issn(s):
             s2 = s[0:4] + s[5:9]

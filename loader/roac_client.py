@@ -324,3 +324,27 @@ def save_series_volume(client, book_uuid, series_uuid, volume_ordinal):
         "volumeOrdinal": volume_ordinal
     }
     do_graphql(client, payload, data)
+
+def save_keyword(client, book_uuid, keyword, idx):
+    payload = """
+    mutation {
+        createBookKeyword (
+          input: {
+            bookKeyword: {
+              bookUuid: "%(bookUuid)s"
+              keywordText: "%(keywordText)s"
+              keywordOrdinal: %(keywordOrdinal)s
+            }
+          }
+        ) {
+            clientMutationId
+        }
+      }
+    """
+    data = {
+        "bookUuid": book_uuid,
+        "keywordText": keyword,
+        "keywordOrdinal": idx
+    }
+    do_graphql(client, payload, data)
+    

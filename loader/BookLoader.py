@@ -63,6 +63,8 @@ class BookLoader:
 
         self.get_series()
 
+        self.save_keywords()
+
     def skip_row(self, data):
         return False
 
@@ -79,6 +81,9 @@ class BookLoader:
         assert False # unimplemented
 
     def get_series_ids(self, data, raw_data):
+        assert False # unimplemented
+
+    def get_keywords(self, data, raw_data):
         assert False # unimplemented
 
     # note duplicated fn below
@@ -101,6 +106,7 @@ class BookLoader:
             data['row'] = row
             data['imprint'] = self.get_imprint(data, row)
             data['series_ids'] = self.get_series_ids(data, row)
+            data['keywords'] = self.get_keywords(data, row)
             yield data
 
     def contributors_from_row(self, row):
@@ -260,3 +266,14 @@ class BookLoader:
                                            series_uuid,
                                            volume_ordinal)
 
+    def save_keywords(self):
+        def all_keywords():
+            for data in self.get_books():
+                yield data["row_id"], data["keywords"]
+
+        for row_id, kwds in all_keywords():
+            book_uuid = self.book_uuids[row_id]
+            idx = 0
+            for kwd in kwds:
+                idx += 1
+                roac_client.save_keyword(self.client, book_uuid, kwd, idx)
