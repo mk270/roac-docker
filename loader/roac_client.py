@@ -1,4 +1,3 @@
-
 import os
 import uuid
 import json
@@ -112,7 +111,7 @@ def save_book(client, book_data, publisher):
         "cover_url",
         "short_blurb"
     ]
-    
+
     for detail in details:
         detail_data = {
             "bookUuid": book_data["bookUuid"],
