@@ -4,6 +4,8 @@ import roac_client
 import codelists
 import decimal
 
+## FIXME rename "get_" functions which mutate the DB
+
 class BookLoader:
     # self.book_uuids starts off as an empty dict
     # it is supposed to map X to Y
