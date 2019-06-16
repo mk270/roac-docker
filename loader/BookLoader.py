@@ -16,7 +16,8 @@ class BookLoader:
     # then cached in book_uuids
 
 
-    def __init__(self, client, data_file, publisher_name, max_books):
+    def __init__(self, client, data_file, publisher_name, max_books,
+                 create_subjects):
         self.client = client
         self.data_file = data_file
         self.book_uuids = {}
@@ -24,6 +25,7 @@ class BookLoader:
         self.contributor_uuids = frozenset([])
         self.publisher_name = publisher_name
         self.max_books = max_books
+        self.create_subjects = create_subjects
 
     def setup_column_mapping(self):
         return {
@@ -303,10 +305,11 @@ class BookLoader:
             for subject in subjects:
                 subject_scheme, subject_name = subject
                 if subject not in subjects_seen:
-                    roac_client.save_subject(self.client,
-                                             subject_scheme,
-                                             subject_name)
                     subjects_seen |= set([subject])
+                    if self.create_subjects:
+                        roac_client.save_subject(self.client,
+                                                 subject_scheme,
+                                                 subject_name)
                 book_subject = (book_uuid, subject_scheme, subject_name)
 
                 if book_subject in book_subjects_seen:

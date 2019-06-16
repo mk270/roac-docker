@@ -6,7 +6,7 @@ delete from imprint;
 delete from publication_price;
 delete from book_keyword;
 delete from book_subject;
-delete from subject;
+--delete from subject;
 delete from series_volume;
 delete from series;
 delete from contribution;

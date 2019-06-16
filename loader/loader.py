@@ -19,10 +19,11 @@ publishers = {
     "Punctum": (PunctumBookLoader, "Punctum Books")
 }
 
-def run(client, data_file, mode, max_books):
+def run(client, data_file, mode, max_books, create_subjects):
     loader_class, publisher_name = publishers[mode]
     roac_client.save_publishers(client, publisher_name)
-    book_loader = loader_class(client, data_file, publisher_name, max_books)
+    book_loader = loader_class(client, data_file, publisher_name, max_books,
+                               create_subjects)
     book_loader.load()
 
 def unwrap_args():
@@ -35,9 +36,12 @@ def unwrap_args():
                         default="OBP")
     parser.add_argument("--max-books", type=int, help="Maximum books to import",
                         default=None)
+    parser.add_argument("--create-subjects", action="store_true",
+                        default=False,
+                        help="Auto-create BIC/BISAC codes where necessary")
     args = parser.parse_args()
     client = GraphQLClient(args.base_url)
-    run(client, args.file, args.mode, args.max_books)
+    run(client, args.file, args.mode, args.max_books, args.create_subjects)
 
 if __name__ == '__main__':
     unwrap_args()
