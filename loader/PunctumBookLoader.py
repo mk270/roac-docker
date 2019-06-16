@@ -22,7 +22,8 @@ class PunctumBookLoader(BookLoader):
         return row_data["Imprint"]
 
     def get_keywords(self, data, row_data):
-        return [] ## FIXME - Punctum dataset currently lacks this info
+        kwds = row_data["Keywords"]
+        return [ kwd.strip() for kwd in set(kwds.split(",")) ]
 
     def get_series_ids(self, data, row_data):
         return None ## FIXME - Punctum dataset currently lacks this info
@@ -34,7 +35,10 @@ class PunctumBookLoader(BookLoader):
         return None
 
     def get_subjects(self, data, row_data):
-        return [] ## FIXME
+        bics = row_data["BIC"].strip()
+        if len(bics) == 0:
+            return []
+        return [ ("BIC", row_data["BIC"] ) ]
 
     ## see comment for self.get_doi
     def skip_row(self, data):
