@@ -73,30 +73,30 @@ class BookLoader:
     def skip_row_no_dict(self, row):
         return False
 
-    def get_doi(self, data, raw_data):
-        return raw_data['DOI']
+    def get_doi(self, data, row_data):
+        return row_data['DOI']
 
     def get_copyright_holders(self, data):
         assert False # unimplemented
 
-    def get_imprint(self, data, raw_data):
+    def get_imprint(self, data, row_data):
         assert False # unimplemented
 
-    def get_series_ids(self, data, raw_data):
+    def get_series_ids(self, data, row_data):
         """Returns (print issn, digital issn, series name) tuple.
 
            ISSNs are normalised to eight characters.
            Otherwise returns None."""
         assert False # unimplemented
 
-    def get_series_ordinal(self, data, raw_data):
+    def get_series_ordinal(self, data, row_data):
         assert False
 
-    def get_keywords(self, data, raw_data):
+    def get_keywords(self, data, row_data):
         """Returns list of strings."""
         assert False # unimplemented
 
-    def get_subjects(self, data, raw_data):
+    def get_subjects(self, data, row_data):
         assert False # unimplemented
 
     # note duplicated fn below

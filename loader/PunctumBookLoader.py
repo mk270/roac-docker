@@ -15,11 +15,11 @@ class PunctumBookLoader(BookLoader):
 
     ## FIXME: this should be fixed upstream
     ## the code *here* ought to throw an error rather than correct this
-    def get_doi(self, data, raw_data):
-        return raw_data['DOI'].strip("\n")
+    def get_doi(self, data, row_data):
+        return row_data['DOI'].strip("\n")
 
-    def get_imprint(self, data, raw_data):
-        return raw_data["Imprint"]
+    def get_imprint(self, data, row_data):
+        return row_data["Imprint"]
 
     def get_keywords(self, data, row_data):
         return [] ## FIXME - Punctum dataset currently lacks this info

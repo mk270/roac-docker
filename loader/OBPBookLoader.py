@@ -18,10 +18,10 @@ class OBPBookLoader(BookLoader):
     def skip_row_no_dict(self, row):
         return row[3] == ""
 
-    def get_doi(self, data, raw_data):
+    def get_doi(self, data, row_data):
         return data['doiPrefix'] + '/' + data['doiSuffix']
 
-    def get_imprint(self, data, raw_data):
+    def get_imprint(self, data, row_data):
         """Unimplemented - OBP effectively has no imprints."""
         return None
 
@@ -39,16 +39,16 @@ class OBPBookLoader(BookLoader):
                         yield scheme, val
         return [ i for i in all_subject_data() ]
 
-    def get_series_ids(self, data, raw_data):
+    def get_series_ids(self, data, row_data):
         def sanitise_issn(s):
             s2 = s[0:4] + s[5:9]
             assert s2[:7].isdigit()
             assert s2[-1:] == "X" or s2[-1:].isdigit()
             return s2
 
-        print_issn   = raw_data["ISSN Print with dashes"]
-        digital_issn = raw_data["ISSN Digital with dashes"]
-        series_name  = raw_data["Series Name"]
+        print_issn   = row_data["ISSN Print with dashes"]
+        digital_issn = row_data["ISSN Digital with dashes"]
+        series_name  = row_data["Series Name"]
         if len(print_issn) < 8 or len(digital_issn) < 8:
             return None
         return (sanitise_issn(print_issn),
