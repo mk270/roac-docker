@@ -295,17 +295,25 @@ class BookLoader:
 
     def save_subjects(self):
         subjects_seen = set([])
+        book_subjects_seen = {}
 
         for data in self.get_books():
+            book_uuid = self.book_uuids[data["row_id"]]
             subjects = data["subjects"]
             for subject in subjects:
+                subject_scheme, subject_name = subject
                 if subject not in subjects_seen:
-                    subject_scheme, subject_name = subject
                     roac_client.save_subject(self.client,
                                              subject_scheme,
                                              subject_name)
                     subjects_seen |= set([subject])
-                book_uuid = self.book_uuids[data["row_id"]]
+                book_subject = (book_uuid, subject_scheme, subject_name)
+
+                if book_subject in book_subjects_seen:
+                    print("Duplicate book subject: {} {}".format(
+                        data["doi"], book_subject), file=sys.stderr)
+                    continue
+                book_subjects_seen[book_subject] = True
                 roac_client.save_book_subject(self.client,
                                               book_uuid,
                                               subject_scheme,
