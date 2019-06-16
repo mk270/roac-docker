@@ -13,5 +13,8 @@ copy detail (detail_id, detail_name)
 copy subject_scheme (subject_scheme_name)
   from '/docker-entrypoint-initdb.d/subject_scheme.csv' with csv;
 
+copy subject (subject_scheme_name, subject_code)
+  from '/docker-entrypoint-initdb.d/subjects.csv' with csv;
+
 copy currency (currency_code)
   from '/docker-entrypoint-initdb.d/iso4217.csv' with csv;
