@@ -21,6 +21,21 @@ class PunctumBookLoader(BookLoader):
     def get_imprint(self, data, raw_data):
         return raw_data["Imprint"]
 
+    def get_keywords(self, data, row_data):
+        return [] ## FIXME - Punctum dataset currently lacks this info
+
+    def get_series_ids(self, data, row_data):
+        return None ## FIXME - Punctum dataset currently lacks this info
+
+    def get_series_ordinal(self, data, row_data):
+        num = row_data["Series Number"]
+        if num.isdigit():
+            return int(num)
+        return None
+
+    def get_subjects(self, data, row_data):
+        return [] ## FIXME
+
     ## see comment for self.get_doi
     def skip_row(self, data):
         return data['pageCount'] == ""

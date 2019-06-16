@@ -54,6 +54,12 @@ class OBPBookLoader(BookLoader):
                 sanitise_issn(digital_issn),
                 series_name)
 
+    def get_series_ordinal(self, data, row_data):
+        num = row_data["No. in the Series"]
+        if num.isdigit():
+            return int(num)
+        return None
+
     def get_copyright_holders(self, row):
         base = "Copyright holder "
         names = []

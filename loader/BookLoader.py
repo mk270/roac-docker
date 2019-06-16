@@ -83,9 +83,17 @@ class BookLoader:
         assert False # unimplemented
 
     def get_series_ids(self, data, raw_data):
+        """Returns (print issn, digital issn, series name) tuple.
+
+           ISSNs are normalised to eight characters.
+           Otherwise returns None."""
         assert False # unimplemented
 
+    def get_series_ordinal(self, data, raw_data):
+        assert False
+
     def get_keywords(self, data, raw_data):
+        """Returns list of strings."""
         assert False # unimplemented
 
     def get_subjects(self, data, raw_data):
@@ -113,6 +121,7 @@ class BookLoader:
             data['series_ids'] = self.get_series_ids(data, row)
             data['keywords'] = self.get_keywords(data, row)
             data['subjects'] = self.get_subjects(data, row)
+            data['series_ordinal'] = self.get_series_ordinal(data, row)
             yield data
 
     def contributors_from_row(self, row):
@@ -258,7 +267,7 @@ class BookLoader:
 
         for data in self.get_books():
             series_ids = data["series_ids"]
-            number = data["row"]["No. in the Series"]
+            number = data["series_ordinal"]
             if series_ids is None:
                 continue
             if number == "":
