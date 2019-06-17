@@ -4,3 +4,6 @@ doi,DOI
 short_blurb,Short blurb
 full_text_pdf_url,Full text (PDF) URL
 full_text_html_url,Full text (HTML) URL
+licence_url,Licence URL
+licence_code,Licence code
+licence_version,Licence version

@@ -36,7 +36,10 @@ class BookLoader:
             "overview_url",
             "cover_url",
             "short_blurb",
-            "full_text_pdf_url"
+            "full_text_pdf_url",
+            "licence_url",
+            "licence_code",
+            "licence_version"
         ]
 
     def extra_detail_fields(self):
@@ -105,6 +108,11 @@ class BookLoader:
     def get_subjects(self, data, row_data):
         assert False # unimplemented
 
+    def get_licence(self, data, row_data):
+        assert False # unimplemented
+        # should return: (URL, licence code, licence version)
+        # last two fields may be None
+
     # note duplicated fn below
     def get_books(self):
         columns = self.setup_column_mapping()
@@ -128,6 +136,11 @@ class BookLoader:
             data['keywords'] = self.get_keywords(data, row)
             data['subjects'] = self.get_subjects(data, row)
             data['series_ordinal'] = self.get_series_ordinal(data, row)
+
+            lic_url, lic_code, lic_version = self.get_licence(data, row)
+            data['licence_url'] = lic_url
+            data['licence_code'] = lic_code
+            data['licence_version'] = lic_version
             yield data
 
     def contributors_from_row(self, row):

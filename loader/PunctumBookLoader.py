@@ -1,3 +1,4 @@
+import sys
 
 from BookLoader import BookLoader
 
@@ -21,6 +22,15 @@ class PunctumBookLoader(BookLoader):
 
     def get_imprint(self, data, row_data):
         return row_data["Imprint"]
+
+    def get_licence(self, data, row_data):
+        lic_url = row_data["License"]
+        if not lic_url.startswith("https://creativecommons.org/licenses/"):
+            return (lic_url, None, None)
+        parts = lic_url.split("/")
+        version = parts[5]
+        code = "CC " + parts[4].upper()
+        return lic_url, code, version
 
     def get_keywords(self, data, row_data):
         kwds = row_data["Keywords"]

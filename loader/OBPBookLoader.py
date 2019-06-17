@@ -47,6 +47,12 @@ class OBPBookLoader(BookLoader):
         """Unimplemented - OBP effectively has no imprints."""
         return None
 
+    def get_licence(self, data, row_data):
+        lic_url = row_data["License URL (human-readable summary)"]
+        lic_code = row_data["License"]
+        lic_version = row_data["Version of the license"]
+        return lic_url, lic_code, lic_version
+
     def get_keywords(self, data, row_data):
         kwds = row_data["keywords"]
         return [ kwd.strip() for kwd in kwds.split(";") ]
