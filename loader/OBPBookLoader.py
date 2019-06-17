@@ -12,6 +12,23 @@ def comma_join(names):
         return ", ".join(names[0:-1]) + " & " + names[-1]
 
 class OBPBookLoader(BookLoader):
+    def setup_column_mapping(self):
+        return {
+            "Title": "title",
+            "Subtitle": "subtitle",
+            "DOI prefix": "doiPrefix",
+            "DOI suffix": "doiSuffix",
+            "no of pages": "pageCount",
+            "Cover URL": "cover_url",
+            "Book-page URL": "overview_url",
+            "ONIX Language Code": "languageCode",
+            "edition number (integers only)": "edition",
+            "Copyright holder 1": "copyrightHolder",
+            "Short Blurb (less than 100 words)": "short_blurb",
+            "Full-text URL - PDF": "full_text_pdf_url",
+            "Full-text URL - HTML": "full_text_html_url"
+        }
+
     def extra_detail_fields(self):
         return [
             "full_text_html_url"
