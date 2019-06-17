@@ -10,7 +10,8 @@ class PunctumBookLoader(BookLoader):
             "Website": "overview_url",
             "Language": "languageCode",
             "Edition": "edition",
-            "Abstract": "short_blurb"
+            "Abstract": "short_blurb",
+            "Link to Download Title": "full_text_pdf_url"
         }
 
     ## FIXME: this should be fixed upstream

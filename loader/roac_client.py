@@ -54,7 +54,7 @@ def save_publishers(client, publisher_name):
 def jprint(data):
     print(json.dumps(data, indent=2), file=sys.stderr)
 
-def save_book(client, book_data, publisher):
+def save_book(client, book_data, publisher, details):
     #jprint(book_data)
 
     payload = """
@@ -104,13 +104,6 @@ def save_book(client, book_data, publisher):
         }
       }
     """
-
-    details = [
-        "doi",
-        "overview_url",
-        "cover_url",
-        "short_blurb"
-    ]
 
     for detail in details:
         detail_data = {

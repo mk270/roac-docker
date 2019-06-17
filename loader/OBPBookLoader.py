@@ -12,6 +12,11 @@ def comma_join(names):
         return ", ".join(names[0:-1]) + " & " + names[-1]
 
 class OBPBookLoader(BookLoader):
+    def extra_detail_fields(self):
+        return [
+            "full_text_html_url"
+        ]
+
     def skip_row(self, data):
         return data['doiSuffix'] == ""
 

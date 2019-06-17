@@ -39,13 +39,31 @@ class BookLoader:
             "ONIX Language Code": "languageCode",
             "edition number (integers only)": "edition",
             "Copyright holder 1": "copyrightHolder",
-            "Short Blurb (less than 100 words)": "short_blurb"
+            "Short Blurb (less than 100 words)": "short_blurb",
+            "Full-text URL - PDF": "full_text_pdf_url",
+            "Full-text URL - HTML": "full_text_html_url"
         }
 
+    def standard_detail_fields(self):
+        return [
+            "doi",
+            "overview_url",
+            "cover_url",
+            "short_blurb",
+            "full_text_pdf_url"
+        ]
+
+    def extra_detail_fields(self):
+        return []
+
     def load(self):
+        detail_fields = self.standard_detail_fields() + \
+                        self.extra_detail_fields()
+
         for data in self.get_books():
             book_uuid = roac_client.save_book(self.client, data,
-                                              self.publisher_name)
+                                              self.publisher_name,
+                                              detail_fields)
             self.book_uuids[data["row_id"]] = book_uuid
 
         contributors = frozenset([ (c[0], c[1])
