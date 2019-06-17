@@ -11,6 +11,30 @@ import roac_client
 import codelists
 import decimal
 
+# The class `BookLoader' is used for loading a publisher's book metadata
+# from a CSV into the ScholarLed data model.
+#
+# It provides for reading the CSV by named columns and numbered columns;
+# this is because some of OBP's metadata is organised by columns with
+# ambiguous names, and it is easier to refer to some columns by numerical
+# index rather than by name.
+#
+# Most of the work is done by the .load() and .get_books() methods. load()
+# reads the CSV multiple times, extracting various entities. In particular,
+# it builds up a map of CSV row numbers to book uuids allowing future
+# passes through the CSV to identify books' uuids from the column number.
+#
+# The differences between OBP and Punctum metadata formats are handled
+# by subclassing `BookLoader'. 
+
+# TODO: document
+#   skip_row
+#   _no_dict
+#   the mapping dictionaries
+#   what data and row are
+
+
+
 ## FIXME rename "get_" functions which mutate the DB
 
 class BookLoader:
