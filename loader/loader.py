@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
 
+# ScholarLed Metadata loader, by Martin Keegan
+#
+# Copyright (C) 2018-2019  Open Book Publishers
+#
+# This programme is free software; you may redistribute and/or modify
+# it under the terms of the Apache License v2.0.
+
 """
    TODO: ENFORCE RESULT CHECKS
 
